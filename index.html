@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treat Cancer Like a Boss</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1a1a;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    #app-container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+    #sidebar {
+      width: 350px;
+      background: #2a2a2a;
+      color: #ffffff;
+      padding: 20px;
+      overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    }
+    #game-container {
+      flex: 1;
+      position: relative;
+    }
+    h1 {
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      color: #ffffff;
+    }
+    .stat {
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .stat-label {
+      font-weight: bold;
+    }
+    .section {
+      margin: 20px 0;
+      padding: 15px 0;
+      border-top: 1px solid #444;
+    }
+    .section:first-of-type {
+      border-top: none;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #cccccc;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      background: #333333;
+      color: #ffffff;
+      border: 1px solid #555555;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    select:hover {
+      background: #444444;
+    }
+    .treatment-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .treatment-row select {
+      flex: 1;
+    }
+    .treatment-row select:first-child {
+      flex: 2;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: #4444ff;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #6666ff;
+    }
+    button:active {
+      background: #3333cc;
+    }
+    #messages {
+      margin-top: 20px;
+      padding: 10px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #ffff00;
+      min-height: 100px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .info-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .info-button {
+      flex: 1;
+      padding: 8px;
+      margin: 0;
+      background: #555555;
+      font-size: 12px;
+    }
+    .info-button:hover {
+      background: #666666;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    .modal-content {
+      background-color: #2a2a2a;
+      margin: 5% auto;
+      padding: 30px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #ffffff;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      color: #ffffff;
+      border-bottom: 2px solid #4444ff;
+      padding-bottom: 10px;
+    }
+    .modal-content h3 {
+      color: #4444ff;
+      margin-top: 20px;
+    }
+    .modal-content p, .modal-content ul, .modal-content li {
+      line-height: 1.6;
+      color: #cccccc;
+    }
+    .modal-content ul {
+      margin-left: 20px;
+    }
+    .modal-content code {
+      background: #1a1a1a;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #ffff00;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+      color: #fff;
+    }
+    .param-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .param-item {
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 4px;
+      border-left: 3px solid #4444ff;
+    }
+    .param-name {
+      font-weight: bold;
+      color: #4444ff;
+      margin-bottom: 5px;
+    }
+    .param-value {
+      font-size: 18px;
+      color: #ffffff;
+      margin-bottom: 5px;
+    }
+    .param-description {
+      font-size: 12px;
+      color: #999999;
+      margin-bottom: 10px;
+    }
+    .param-input {
+      width: 100%;
+      padding: 8px;
+      background: #333333;
+      color: #ffffff;
+      border: 1px solid #555555;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .param-input:focus {
+      outline: none;
+      border-color: #4444ff;
+    }
+    .settings-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #555;
+    }
+    .settings-actions button {
+      flex: 1;
+      margin: 0;
+    }
+    .apply-button {
+      background: #44ff44;
+      color: #000000;
+    }
+    .apply-button:hover {
+      background: #66ff66;
+    }
+    .reset-button {
+      background: #ff4444;
+    }
+    .reset-button:hover {
+      background: #ff6666;
+    }
+    .game-over-overlay {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .game-over-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      animation: scaleIn 0.5s;
+    }
+    @keyframes scaleIn {
+      from { transform: translate(-50%, -50%) scale(0.5); }
+      to { transform: translate(-50%, -50%) scale(1); }
+    }
+    .game-over-title {
+      font-size: 80px;
+      font-weight: bold;
+      margin: 0 0 30px 0;
+      text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+    }
+    .game-over-title.win {
+      color: #44ff44;
+      text-shadow: 0 0 20px rgba(68, 255, 68, 0.8);
+    }
+    .game-over-title.lose {
+      color: #ff4444;
+      text-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+    }
+    .game-over-message {
+      font-size: 24px;
+      color: #ffffff;
+      margin-bottom: 40px;
+    }
+    .game-over-button {
+      padding: 15px 40px;
+      font-size: 20px;
+      background: #4444ff;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .game-over-button:hover {
+      background: #6666ff;
+    }
+    .diagnostic-banner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1500;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      padding: 30px 50px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      min-width: 400px;
+      animation: bannerSlide 0.3s ease-out;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+    @keyframes bannerSlide {
+      from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+      }
+    }
+    .diagnostic-banner.ct-scan {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    .diagnostic-banner.biomarker {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    .diagnostic-banner-title {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .diagnostic-banner-content {
+      font-size: 24px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-container">
+    <div id="sidebar">
+      <h1>Treat Cancer Like a Boss</h1>
+      
+      <div class="info-buttons">
+        <button class="info-button" id="show-instructions">How to Play</button>
+        <button class="info-button" id="show-settings">Game Settings</button>
+      </div>
+      
+      <div class="stat">
+        <span class="stat-label">Month:</span> <span id="month">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Cells:</span> <span id="cell-count">0</span>
+      </div>
+
+      <div class="section">
+        <label>Treatment 1:</label>
+        <div class="treatment-row">
+          <select id="treatment1"></select>
+          <select id="dose1">
+            <option value="High">High</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <label>Treatment 2:</label>
+        <div class="treatment-row">
+          <select id="treatment2"></select>
+          <select id="dose2">
+            <option value="High">High</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <button id="apply-treatment">Apply Treatment</button>
+      </div>
+
+      <div class="section">
+        <button id="ct-scan">CT Scan</button>
+        <button id="restart-game" style="background: #ff8800;">Restart Game</button>
+      </div>
+
+      <div class="section">
+        <label>Biomarker Test:</label>
+        <select id="diagnostic-test">
+          <option value="Proliferation">Proliferation</option>
+          <option value="Estrogen receptor">Estrogen receptor</option>
+          <option value="HER2">HER2</option>
+          <option value="PD-L1">PD-L1</option>
+        </select>
+        <button id="order-test">Order Test</button>
+      </div>
+
+      <div id="messages"></div>
+    </div>
+    <div id="game-container"></div>
+  </div>
+
+  <div id="instructions-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-instructions">&times;</span>
+      <h2>How to Play: Treat Cancer Like a Boss</h2>
+      
+      <h3>Overview</h3>
+      <p>This game simulates cancer treatment decisions where you must manage therapy resistance, cell competition, and mutation dynamics. Your goal is to keep the patient alive by controlling tumor growth without letting resistant cells take over.</p>
+      
+      <h3>Cell Types</h3>
+      <p>There are 4 cell types based on therapy resistance:</p>
+      <ul>
+        <li><strong>Sensitive (Green)</strong> - Vulnerable to both effective therapies</li>
+        <li><strong>Resistant-1 (Orange)</strong> - Resistant to therapy 1 only</li>
+        <li><strong>Resistant-2 (Magenta)</strong> - Resistant to therapy 2 only</li>
+        <li><strong>Doubly-Resistant (Red)</strong> - Resistant to both therapies</li>
+      </ul>
+      
+      <h3>Treatment System</h3>
+      <p>Six therapies are available: Paclitaxel, Carboplatin, Radiation, Tamoxifen, Herceptin, and Pembrolizumab. The tumor is randomly sensitive to 2 of these (hidden from you initially).</p>
+      <ul>
+        <li><strong>High dose</strong> - Kills all sensitive cells</li>
+        <li><strong>Low dose</strong> - Kills sensitive cells with 50% probability</li>
+        <li>You can apply up to 2 treatments per month</li>
+      </ul>
+      
+      <h3>Cell Lifecycle (Each Month)</h3>
+      <ol>
+        <li><strong>Treatment</strong> - Selected therapies kill sensitive cells</li>
+        <li><strong>Proliferation</strong> - All surviving cells duplicate</li>
+        <li><strong>Mutation</strong> - New cells may gain resistance (25% chance by default)</li>
+        <li><strong>Competition</strong> - Cells compete in groups, weakest die (resistant cells are weaker)</li>
+      </ol>
+      
+      <h3>Diagnostic Tools</h3>
+      <p><strong>CT Scan:</strong> Shows tumor size in cubic centimeters (cell count / 10). Can only be ordered once every 2 months. Minimum detection: 10 cells.</p>
+      <p><strong>Biomarker Tests:</strong> Provide clues about which therapies might work:</p>
+      <ul>
+        <li><strong>Proliferation</strong> - Indicates sensitivity to Paclitaxel/Carboplatin/Radiation</li>
+        <li><strong>Estrogen receptor</strong> - Indicates sensitivity to Tamoxifen</li>
+        <li><strong>HER2</strong> - Indicates sensitivity to Herceptin</li>
+        <li><strong>PD-L1</strong> - Indicates sensitivity to Pembrolizumab</li>
+      </ul>
+      <p>Results range from Negative to Strongly Positive based on the proportion of sensitive cells.</p>
+      
+      <h3>Win/Lose Conditions</h3>
+      <ul>
+        <li><strong>Lose:</strong> Tumor exceeds 5cc (50 cells by default)</li>
+        <li><strong>Win:</strong> Keep patient alive for 24 months (by default)</li>
+      </ul>
+      
+      <h3>Strategy Tips</h3>
+      <ul>
+        <li>Use biomarker tests early to identify effective therapies</li>
+        <li>Consider low-dose treatments to slow resistance evolution</li>
+        <li>Monitor tumor size regularly with CT scans</li>
+        <li>Remember: resistant cells are weaker and may die from competition</li>
+        <li>Aggressive treatment can backfire by selecting for resistant cells</li>
+      </ul>
+      
+      <h3>Controls</h3>
+      <ul>
+        <li><strong>Arrow Keys:</strong> Pan camera</li>
+        <li><strong>+/-:</strong> Zoom in/out</li>
+        <li><strong>Click cell:</strong> View cell details in console</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="game-over-overlay" class="game-over-overlay">
+    <div class="game-over-content">
+      <div id="game-over-title" class="game-over-title"></div>
+      <div id="game-over-message" class="game-over-message"></div>
+      <button class="game-over-button" id="game-over-restart">Play Again</button>
+    </div>
+  </div>
+
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-settings">&times;</span>
+      <h2>Game Settings</h2>
+      <p>Modify these parameters to customize the game mechanics. Changes will take effect on the next game restart.</p>
+      
+      <div class="param-grid">
+        <div class="param-item">
+          <div class="param-name">Starting Cells</div>
+          <div class="param-description">Number of cells at game start</div>
+          <input type="number" class="param-input" id="input-numStartingCells" min="1" max="100" step="1">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Proportion Resistant (%)</div>
+          <div class="param-description">% of starting cells with some resistance</div>
+          <input type="number" class="param-input" id="input-proportionResistant" min="0" max="100" step="5">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Cells That Compete</div>
+          <div class="param-description">Group size for competition phase</div>
+          <input type="number" class="param-input" id="input-numCellsThatCompete" min="2" max="20" step="1">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Cells That Die</div>
+          <div class="param-description">Number of weakest cells that die per group</div>
+          <input type="number" class="param-input" id="input-numCellsThatDie" min="1" max="10" step="1">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Detection Threshold</div>
+          <div class="param-description">Minimum cells detectable by CT scan</div>
+          <input type="number" class="param-input" id="input-numCellsDetectableByRadiology" min="1" max="50" step="1">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Mutation Rate (%)</div>
+          <div class="param-description">Probability of mutation during proliferation</div>
+          <input type="number" class="param-input" id="input-mutationRate" min="0" max="100" step="5">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Lethal Cancer Size (cc)</div>
+          <div class="param-description">Tumor size that causes game over</div>
+          <input type="number" class="param-input" id="input-sizeOfLethalCancer" min="1" max="100" step="1">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Months to Survive</div>
+          <div class="param-description">Target survival time to win</div>
+          <input type="number" class="param-input" id="input-monthsToSurvive" min="1" max="120" step="1">
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Allow Back Mutations</div>
+          <div class="param-description">Can resistant cells lose resistance?</div>
+          <select class="param-input" id="input-allowBackMutations">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Show Cell Tooltips (Cheat)</div>
+          <div class="param-description">Click cells to see their sensitivities</div>
+          <select class="param-input" id="input-showTooltips">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+        
+        <div class="param-item">
+          <div class="param-name">Win at Zero Population</div>
+          <div class="param-description">Win if all cancer cells are eliminated</div>
+          <select class="param-input" id="input-winAtZeroPopulation">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="settings-actions">
+        <button class="apply-button" id="apply-settings">Apply Settings</button>
+        <button class="reset-button" id="reset-settings">Reset to Defaults</button>
+      </div>
+      
+      <p style="margin-top: 20px; font-size: 12px; color: #999;">Note: Settings are saved to browser localStorage and persist between sessions.</p>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
