@@ -47,7 +47,20 @@ export class GameState {
   };
 
   constructor() {
+    this.loadSettings();
     this.chooseSensitivities();
+  }
+  
+  private loadSettings(): void {
+    const savedSettings = localStorage.getItem('cancerBossSettings');
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        Object.assign(this.config, settings);
+      } catch (e) {
+        console.error('Failed to load settings:', e);
+      }
+    }
   }
 
   private chooseSensitivities(): void {

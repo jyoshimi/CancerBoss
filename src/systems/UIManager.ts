@@ -67,7 +67,6 @@ export class UIManager {
     this.gameOverMessage = document.getElementById('game-over-message')!;
     this.gameOverRestartButton = document.getElementById('game-over-restart') as HTMLButtonElement;
     
-    this.loadSettings();
     this.initializeUI();
   }
 
@@ -143,18 +142,17 @@ export class UIManager {
         this.settingsModal.style.display = 'none';
       }
     });
-  }
-  
-  private loadSettings(): void {
-    const savedSettings = localStorage.getItem('cancerBossSettings');
-    if (savedSettings) {
-      try {
-        const settings = JSON.parse(savedSettings);
-        Object.assign(this.gameState.config, settings);
-      } catch (e) {
-        console.error('Failed to load settings:', e);
+    
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        if (this.instructionsModal.style.display === 'block') {
+          this.instructionsModal.style.display = 'none';
+        }
+        if (this.settingsModal.style.display === 'block') {
+          this.settingsModal.style.display = 'none';
+        }
       }
-    }
+    });
   }
   
   private saveSettings(): void {
