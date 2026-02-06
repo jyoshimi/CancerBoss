@@ -34,20 +34,66 @@
       font-size: 20px;
       color: #ffffff;
     }
-    .stat {
-      margin-bottom: 10px;
-      font-size: 14px;
+    .separator {
+      height: 1px;
+      background: #444;
+      margin: 20px 0;
     }
-    .stat-label {
+    .progress-bars {
+      margin: 20px 0;
+    }
+    .progress-bar-container {
+      margin-bottom: 15px;
+    }
+    .progress-bar-container:last-child {
+      margin-bottom: 0;
+    }
+    .progress-bar-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #cccccc;
+    }
+    .progress-bar-label span:first-child {
       font-weight: bold;
+    }
+    .progress-bar-label span:last-child {
+      color: #999999;
+      font-size: 12px;
+    }
+    .progress-bar-track {
+      position: relative;
+      width: 100%;
+      height: 24px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #555555;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+    .progress-bar-fill.tumor-size {
+      background: linear-gradient(90deg, #44ff44 0%, #ffaa00 50%, #ff4444 100%);
+    }
+    .progress-bar-fill.survival-time {
+      background: linear-gradient(90deg, #4444ff 0%, #44ff44 100%);
+    }
+    .progress-bar-marker {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      transition: left 0.3s ease;
+      pointer-events: none;
     }
     .section {
       margin: 20px 0;
-      padding: 15px 0;
-      border-top: 1px solid #444;
-    }
-    .section:first-of-type {
-      border-top: none;
     }
     label {
       display: block;
@@ -361,13 +407,34 @@
         <button class="info-button" id="show-instructions">How to Play</button>
         <button class="info-button" id="show-settings">Game Settings</button>
       </div>
-      
-      <div class="stat">
-        <span class="stat-label">Month:</span> <span id="month">0</span>
+
+      <div class="separator"></div>
+
+      <div class="progress-bars">
+        <div class="progress-bar-container">
+          <div class="progress-bar-label">
+            <span>Tumor Size (<span id="cell-count">0</span> cells)</span>
+            <span id="tumor-size-value">0.0cc / 5.0cc</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill tumor-size" id="tumor-size-bar"></div>
+            <div class="progress-bar-marker" id="tumor-size-marker"></div>
+          </div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-label">
+            <span>Survival Time</span>
+            <span id="survival-time-value">0 / 24 months</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill survival-time" id="survival-time-bar"></div>
+            <div class="progress-bar-marker" id="survival-time-marker"></div>
+          </div>
+        </div>
       </div>
-      <div class="stat">
-        <span class="stat-label">Cells:</span> <span id="cell-count">0</span>
-      </div>
+
+      <div class="separator"></div>
 
       <div class="section">
         <label>Treatment 1:</label>
@@ -391,6 +458,8 @@
         <button id="apply-treatment">Apply Treatment</button>
         <button id="restart-game" style="background: #ff8800;">Restart Game</button>
       </div>
+
+      <div class="separator"></div>
 
       <div class="section">
         <button id="ct-scan">CT Scan</button>
@@ -554,15 +623,6 @@
           <div class="param-name">Show Cell Tooltips (Cheat)</div>
           <div class="param-description">Click cells to see their sensitivities</div>
           <select class="param-input" id="input-showTooltips">
-            <option value="false">No</option>
-            <option value="true">Yes</option>
-          </select>
-        </div>
-        
-        <div class="param-item">
-          <div class="param-name">Win at Zero Population</div>
-          <div class="param-description">Win if all cancer cells are eliminated</div>
-          <select class="param-input" id="input-winAtZeroPopulation">
             <option value="false">No</option>
             <option value="true">Yes</option>
           </select>

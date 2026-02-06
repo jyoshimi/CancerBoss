@@ -19,7 +19,6 @@ export interface GameConfig {
   monthsToSurvive: number;
   allowBackMutations: boolean;
   showTooltips: boolean;
-  winAtZeroPopulation: boolean;
 }
 
 export class GameState {
@@ -42,8 +41,7 @@ export class GameState {
     sizeOfLethalCancer: 5,
     monthsToSurvive: 24,
     allowBackMutations: false,
-    showTooltips: true,
-    winAtZeroPopulation: false
+    showTooltips: true
   };
 
   constructor() {
@@ -92,12 +90,6 @@ export class GameState {
     if (tumorSize > this.config.sizeOfLethalCancer) {
       this.gameOver = true;
       this.addMessage(`GAME OVER: Cancer exceeded lethal size (${tumorSize.toFixed(1)}cc) after ${this.month} months.`);
-    }
-    
-    if (this.config.winAtZeroPopulation && cellCount === 0 && !this.gameOver) {
-      this.gameWon = true;
-      this.gameOver = true;
-      this.addMessage(`VICTORY! All cancer cells eliminated after ${this.month} months!`);
     }
     
     if (this.month >= this.config.monthsToSurvive && !this.gameOver) {

@@ -3,8 +3,13 @@ import { GameState, THERAPIES } from './GameState';
 export class UIManager {
   private gameState: GameState;
   
-  private monthElement: HTMLElement;
   private cellCountElement: HTMLElement;
+  private tumorSizeValueElement: HTMLElement;
+  private survivalTimeValueElement: HTMLElement;
+  private tumorSizeBarElement: HTMLElement;
+  private tumorSizeMarkerElement: HTMLElement;
+  private survivalTimeBarElement: HTMLElement;
+  private survivalTimeMarkerElement: HTMLElement;
   private treatment1Select: HTMLSelectElement;
   private treatment2Select: HTMLSelectElement;
   private dose1Select: HTMLSelectElement;
@@ -40,8 +45,13 @@ export class UIManager {
   constructor(gameState: GameState) {
     this.gameState = gameState;
     
-    this.monthElement = document.getElementById('month')!;
     this.cellCountElement = document.getElementById('cell-count')!;
+    this.tumorSizeValueElement = document.getElementById('tumor-size-value')!;
+    this.survivalTimeValueElement = document.getElementById('survival-time-value')!;
+    this.tumorSizeBarElement = document.getElementById('tumor-size-bar')!;
+    this.tumorSizeMarkerElement = document.getElementById('tumor-size-marker')!;
+    this.survivalTimeBarElement = document.getElementById('survival-time-bar')!;
+    this.survivalTimeMarkerElement = document.getElementById('survival-time-marker')!;
     this.treatment1Select = document.getElementById('treatment1') as HTMLSelectElement;
     this.treatment2Select = document.getElementById('treatment2') as HTMLSelectElement;
     this.dose1Select = document.getElementById('dose1') as HTMLSelectElement;
@@ -172,7 +182,6 @@ export class UIManager {
     (document.getElementById('input-monthsToSurvive') as HTMLInputElement).value = config.monthsToSurvive.toString();
     (document.getElementById('input-allowBackMutations') as HTMLSelectElement).value = config.allowBackMutations.toString();
     (document.getElementById('input-showTooltips') as HTMLSelectElement).value = config.showTooltips.toString();
-    (document.getElementById('input-winAtZeroPopulation') as HTMLSelectElement).value = config.winAtZeroPopulation.toString();
   }
   
   private applySettings(): void {
@@ -188,7 +197,6 @@ export class UIManager {
     config.monthsToSurvive = parseInt((document.getElementById('input-monthsToSurvive') as HTMLInputElement).value);
     config.allowBackMutations = (document.getElementById('input-allowBackMutations') as HTMLSelectElement).value === 'true';
     config.showTooltips = (document.getElementById('input-showTooltips') as HTMLSelectElement).value === 'true';
-    config.winAtZeroPopulation = (document.getElementById('input-winAtZeroPopulation') as HTMLSelectElement).value === 'true';
     
     this.saveSettings();
     this.gameState.addMessage('Settings updated! Click "Restart Game" to apply changes.');
@@ -205,8 +213,7 @@ export class UIManager {
       sizeOfLethalCancer: 5,
       monthsToSurvive: 24,
       allowBackMutations: false,
-      showTooltips: true,
-      winAtZeroPopulation: false
+      showTooltips: true
     };
     
     Object.assign(this.gameState.config, defaultConfig);
@@ -216,8 +223,23 @@ export class UIManager {
   }
 
   update(cellCount: number): void {
-    this.monthElement.textContent = this.gameState.month.toString();
     this.cellCountElement.textContent = cellCount.toString();
+    
+    const tumorSize = cellCount / 10;
+    const lethalSize = this.gameState.config.sizeOfLethalCancer;
+    const monthsToSurvive = this.gameState.config.monthsToSurvive;
+    
+    this.tumorSizeValueElement.textContent = `${tumorSize.toFixed(1)}cc / ${lethalSize.toFixed(1)}cc`;
+    this.survivalTimeValueElement.textContent = `${this.gameState.month} / ${monthsToSurvive} months`;
+    
+    const tumorSizePercent = Math.min((tumorSize / lethalSize) * 100, 100);
+    const survivalTimePercent = Math.min((this.gameState.month / monthsToSurvive) * 100, 100);
+    
+    this.tumorSizeBarElement.style.width = `${tumorSizePercent}%`;
+    this.tumorSizeMarkerElement.style.left = `${tumorSizePercent}%`;
+    
+    this.survivalTimeBarElement.style.width = `${survivalTimePercent}%`;
+    this.survivalTimeMarkerElement.style.left = `${survivalTimePercent}%`;
     
     const recentMessages = this.gameState.messages.slice(-5).join('\n');
     this.messagesElement.textContent = recentMessages;
