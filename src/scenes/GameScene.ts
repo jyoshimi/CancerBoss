@@ -14,6 +14,7 @@ export class GameScene extends Phaser.Scene {
   private readonly MAP_WIDTH = 20;
   private readonly MAP_HEIGHT = 20;
   private readonly CAMERA_SPEED = 5;
+  private isFirstCreate: boolean = true;
 
   constructor() {
     super({ key: 'GameScene' });
@@ -25,7 +26,13 @@ export class GameScene extends Phaser.Scene {
 
     this.gameState = new GameState();
     this.entityManager = new EntityManager(this, this.gameState);
-    this.uiManager = new UIManager(this.gameState);
+    
+    if (this.isFirstCreate) {
+      this.uiManager = new UIManager(this.gameState);
+      this.isFirstCreate = false;
+    } else {
+      this.uiManager.setGameState(this.gameState);
+    }
 
     const centerX = Math.floor(this.MAP_WIDTH / 2);
     const centerY = Math.floor(this.MAP_HEIGHT / 2);

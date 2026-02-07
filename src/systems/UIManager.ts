@@ -80,6 +80,11 @@ export class UIManager {
     this.initializeUI();
   }
 
+  setGameState(gameState: GameState): void {
+    this.gameState = gameState;
+    this.messagesElement.textContent = '';
+  }
+
   private initializeUI(): void {
     this.treatment1Select.innerHTML = '';
     this.treatment2Select.innerHTML = '';
