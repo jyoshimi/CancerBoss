@@ -20,8 +20,6 @@ npm run dev
 
 The game will open at `http://localhost:3000`
 
-## Tech Stack
+## Credits
 
-- Phaser 3
-- TypeScript
-- Vite
+Based on work by [Carlo Maley](https://search.asu.edu/profile/1938294) in NetLogo. Port to webapp by [Jeff Yoshimi](https://jeffyoshimi.net).
