@@ -2,6 +2,10 @@
 
 An isometric tile-based cancer treatment simulation game. Players manage therapy decisions while navigating resistance evolution, cell competition, and mutation dynamics.
 
+## Development Status
+
+This project is currently in active development (beta). It is not ready for active use in classroom or other educational settings yet.
+
 **Play online:** https://jyoshimi.github.io/CancerBoss/
 
 ## Running Locally
