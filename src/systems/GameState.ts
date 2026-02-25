@@ -32,12 +32,12 @@ export class GameState {
   public lastDiagnosticResult: { type: 'ct-scan' | 'biomarker', title: string, content: string } | null = null;
   
   public config: GameConfig = {
-    numStartingCells: 10,
-    proportionResistant: 0.6,
+    numStartingCells: 7,
+    proportionResistant: 0.3,
     numCellsThatCompete: 8,
-    numCellsThatDie: 2,
+    numCellsThatDie: 3,
     numCellsDetectableByRadiology: 10,
-    mutationRate: 0.25,
+    mutationRate: 0.1,
     sizeOfLethalCancer: 5,
     monthsToSurvive: 24,
     allowBackMutations: false,

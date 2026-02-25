@@ -533,12 +533,20 @@
       </ul>
       
       <h3>Strategy Tips</h3>
+      <h3>Mode 1: Learning Mode (Tooltips On)</h3>
       <ul>
-        <li>Use biomarker tests early to identify effective therapies</li>
-        <li>Consider low-dose treatments to slow resistance evolution</li>
-        <li>Monitor tumor size regularly with CT scans</li>
-        <li>Remember: resistant cells are weaker and may die from competition</li>
-        <li>Aggressive treatment can backfire by selecting for resistant cells</li>
+        <li>Leave <strong>Show Cell Tooltips (Cheat)</strong> at its default of Yes. Then you can can click cells to what therapies they respond to. The red ones don't respond to anything.</li>
+        <li>Run a controlled comparison: in one run, use repeated high-dose therapy and observe how quickly the relevant cells that are sensitive to those therapies are killed.</li>
+        <li>But also notice that when mostly red doubly-resistant cells remain, they face less competition and can dominate.</li>
+        <li>Then repeat with more low-dose therapy to keep some sensitive cells present to maintain competitive pressure. This can lead the doubly-resistant cells to be outcompeted.</li>
+      </ul>
+
+      <h3>Mode 2: Clinical Mode (Tooltips Off)</h3>
+      <ul>
+        <li>Turn <strong>Show Cell Tooltips (Cheat)</strong> to No and play using only CT scans and biomarker tests.</li>
+        <li>Use biomarker tests early to identify likely effective therapies, then adapt dosing to tumor response.</li>
+        <li>Use CT scans regularly, and escalate to high dose only when tumor size is rising too fast.</li>
+        <li>In Game Settings, outcompetition pressure is controlled by <strong>Cells That Compete</strong> (group size) and <strong>Cells That Die</strong> (how many weakest cells are removed per group).</li>
       </ul>
       
       <h3>Controls</h3>
@@ -576,19 +584,19 @@
         
         <div class="param-item">
           <div class="param-name">Proportion Resistant (%)</div>
-          <div class="param-description">% of starting cells with some resistance</div>
+          <div class="param-description">% of starting cells that begin resistant (orange/yellow/red, not just red doubly-resistant)</div>
           <input type="number" class="param-input" id="input-proportionResistant" min="0" max="100" step="5">
         </div>
         
         <div class="param-item">
           <div class="param-name">Cells That Compete</div>
-          <div class="param-description">Group size for competition phase</div>
+          <div class="param-description">Cells are shuffled into random groups of this size; each full group applies competition (smaller groups increase outcompetition pressure)</div>
           <input type="number" class="param-input" id="input-numCellsThatCompete" min="2" max="20" step="1">
         </div>
         
         <div class="param-item">
           <div class="param-name">Cells That Die</div>
-          <div class="param-description">Number of weakest cells that die per group</div>
+          <div class="param-description">Number of weakest cells removed per group (higher values increase outcompetition pressure)</div>
           <input type="number" class="param-input" id="input-numCellsThatDie" min="1" max="10" step="1">
         </div>
         
